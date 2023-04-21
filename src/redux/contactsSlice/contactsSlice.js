@@ -1,15 +1,14 @@
-import Notiflix from 'notiflix';
-import { createSlice, nanoid } from '@reduxjs/toolkit';
-import { fetchContacts } from 'redux/operetions';
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchContacts, addContact, deleteContact } from 'redux/operetions';
 
-// const handlePending = state => {
-//   state.isLoading = true;
-// };
+const handlePending = state => {
+  state.isLoading = true;
+};
 
-// const handleRejected = (state, action) => {
-//   state.isLoading = false;
-//   state.error = action.payload;
-// };
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
@@ -22,46 +21,44 @@ const contactsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchContacts.pending, state => {
-        // console.log('awawdawd');
-        state.isLoading = true;
+        handlePending(state);
       })
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        // console.log('awawdawd');
         state.isLoading = false;
         state.error = null;
         state.items = action.payload;
       })
       .addCase(fetchContacts.rejected, (state, action) => {
-        // console.log('awawdawd');
+        handleRejected(state, action);
+      })
+      .addCase(addContact.pending, state => {
+        handlePending(state);
+      })
+      .addCase(addContact.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = null;
+        state.items.push(action.payload);
+      })
+      .addCase(addContact.rejected, (state, action) => {
+        handleRejected(state, action);
+      })
+      .addCase(deleteContact.pending, state => {
+        handlePending(state);
+      })
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        const index = state.items.findIndex(
+          task => task.id === action.payload.id
+        );
+        state.items.splice(index, 1);
+      })
+      .addCase(deleteContact.rejected, (state, action) => {
+        handleRejected(state, action);
       });
   },
 });
 
+// deleteContact
+
 export const contactsReducer = contactsSlice.reducer;
-
-// addContact(state, action) {
-//       for (const contact of state.numbers) {
-//         if (action.payload.name.toLowerCase() === contact.name.toLowerCase()) {
-//           return Notiflix.Notify.failure(
-//             `${action.payload.name} is already in contact`
-//           );
-//         } else if (
-//           action.payload.number.toLowerCase() === contact.number.toLowerCase()
-//         ) {
-//           return Notiflix.Notify.failure(
-//             `${action.payload.number} is already in contact`
-//           );
-//         }
-//       }
-
-//       state.numbers.push({ ...action.payload, id: nanoid() });
-//     },
-//     deleteContact(state, action) {
-//       const index = state.numbers.findIndex(
-//         contact => contact.id === action.payload
-//       );
-//       state.numbers.splice(index, 1);
-//       Notiflix.Notify.success(`Contact deleted successfully`);
-//     },

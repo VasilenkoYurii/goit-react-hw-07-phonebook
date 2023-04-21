@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
-// import { addContact } from 'redux/contactsSlice/contactsSlice';
+import { addContact } from 'redux/operetions';
 import { MainForm, Label, Input, Button } from './ContactForm.styled';
 
 function ContactForm() {
@@ -20,9 +20,9 @@ function ContactForm() {
     resetForm();
     const userObj = {
       name: name,
-      number: number,
+      phone: number,
     };
-    // dispatch(addContact(userObj));
+    dispatch(addContact(userObj));
     setName('');
     setNamber('');
   };
