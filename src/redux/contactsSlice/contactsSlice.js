@@ -1,50 +1,67 @@
 import Notiflix from 'notiflix';
 import { createSlice, nanoid } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { fetchContacts } from 'redux/operetions';
 
-export const contactsSlice = createSlice({
+// const handlePending = state => {
+//   state.isLoading = true;
+// };
+
+// const handleRejected = (state, action) => {
+//   state.isLoading = false;
+//   state.error = action.payload;
+// };
+
+const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: { numbers: [] },
-  reducers: {
-    addContact(state, action) {
-      for (const contact of state.numbers) {
-        if (action.payload.name.toLowerCase() === contact.name.toLowerCase()) {
-          return Notiflix.Notify.failure(
-            `${action.payload.name} is already in contact`
-          );
-        } else if (
-          action.payload.number.toLowerCase() === contact.number.toLowerCase()
-        ) {
-          return Notiflix.Notify.failure(
-            `${action.payload.number} is already in contact`
-          );
-        }
-      }
-
-      state.numbers.push({ ...action.payload, id: nanoid() });
-    },
-    deleteContact(state, action) {
-      const index = state.numbers.findIndex(
-        contact => contact.id === action.payload
-      );
-      state.numbers.splice(index, 1);
-      Notiflix.Notify.success(`Contact deleted successfully`);
-    },
+  initialState: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.pending, state => {
+        // console.log('awawdawd');
+        state.isLoading = true;
+      })
+      .addCase(fetchContacts.fulfilled, (state, action) => {
+        // console.log('awawdawd');
+        state.isLoading = false;
+        state.error = null;
+        state.items = action.payload;
+      })
+      .addCase(fetchContacts.rejected, (state, action) => {
+        // console.log('awawdawd');
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-const persistConfig = {
-  key: 'contacts',
-  storage,
-  whitelist: ['numbers'],
-};
+export const contactsReducer = contactsSlice.reducer;
 
-export const numbersReducer = persistReducer(
-  persistConfig,
-  contactsSlice.reducer
-);
+// addContact(state, action) {
+//       for (const contact of state.numbers) {
+//         if (action.payload.name.toLowerCase() === contact.name.toLowerCase()) {
+//           return Notiflix.Notify.failure(
+//             `${action.payload.name} is already in contact`
+//           );
+//         } else if (
+//           action.payload.number.toLowerCase() === contact.number.toLowerCase()
+//         ) {
+//           return Notiflix.Notify.failure(
+//             `${action.payload.number} is already in contact`
+//           );
+//         }
+//       }
 
-export const { addContact, deleteContact } = contactsSlice.actions;
-
-export const getContacts = state => state.contacts;
+//       state.numbers.push({ ...action.payload, id: nanoid() });
+//     },
+//     deleteContact(state, action) {
+//       const index = state.numbers.findIndex(
+//         contact => contact.id === action.payload
+//       );
+//       state.numbers.splice(index, 1);
+//       Notiflix.Notify.success(`Contact deleted successfully`);
+//     },
