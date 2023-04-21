@@ -5,7 +5,6 @@ export const MainForm = styled(Form)`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  border: 4px solid #3c9086;
   padding: 10px;
   border-radius: 10px;
 `;
@@ -17,11 +16,19 @@ export const Label = styled.label`
 
 export const Input = styled(Field)`
   margin-left: 40px;
-  font-size: 14px;
+  font-size: 16px;
+
+  background: #d7d1c9;
 `;
 
 export const Button = styled.button`
+  transition: background-color 0.5s ease;
+  outline: none;
+  border: none;
+  height: 25px;
+  background-color: #5d534b8a;
+
   &:hover {
-    background-color: teal;
+    background-color: #715b4b;
   }
 `;
